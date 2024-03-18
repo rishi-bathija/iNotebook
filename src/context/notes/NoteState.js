@@ -23,31 +23,31 @@ const NoteState = (props) => {
   const [notes, setNotes] = useState(initialNotes);
 
 
-  const getAllNotes = async ()=>{
-    try{
-    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token" : localStorage.getItem('token')
-      },
-    });
-    const json = await response.json();
-    console.log("Fetched notes:", json);
-    setNotes(json);
-  }catch (error) {
-    console.error("Error fetching notes:", error); // Add this log
-  }
-};
+  const getAllNotes = async () => {
+    try {
+      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem('token')
+        },
+      });
+      const json = await response.json();
+      console.log("Fetched notes:", json);
+      setNotes(json);
+    } catch (error) {
+      console.error("Error fetching notes:", error); // Add this log
+    }
+  };
 
   const addNote = async (title, description, tag) => {
     const response = await fetch(`${host}/api/notes/addnote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "auth-token" :  localStorage.getItem('token')
+        "auth-token": localStorage.getItem('token')
       },
-      body: JSON.stringify({title, description, tag}),
+      body: JSON.stringify({ title, description, tag }),
     });
     // const json = response.json();
 
@@ -70,7 +70,7 @@ const NoteState = (props) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "auth-token" : localStorage.getItem('token')
+        "auth-token": localStorage.getItem('token')
       },
     });
     const json = response.json();
@@ -89,30 +89,30 @@ const NoteState = (props) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "auth-token" : localStorage.getItem('token')
+        "auth-token": localStorage.getItem('token')
       },
-      body: JSON.stringify({title, description, tag}),
+      body: JSON.stringify({ title, description, tag }),
     });
     const json = response.json();
 
-  for (let index = 0; index < notes.length; index++) {
-    const element = notes[index];
-    if (element._id == id) {
-      notes[index].title = title;
-      notes[index].description = description;
-      notes[index].tag = tag;
+    for (let index = 0; index < notes.length; index++) {
+      const element = notes[index];
+      if (element._id == id) {
+        notes[index].title = title;
+        notes[index].description = description;
+        notes[index].tag = tag;
+      }
     }
+    setNotes(notes);
   }
-  setNotes(notes);
-}
 
-return (
-  // provider provides all the data or states which are enclosed in context 
-  // you can also pass below javascript object as {state:state,update:update}
-  <NoteContext.Provider value={{ state, update, notes, setNotes, addNote, deleteNote, editNote, getAllNotes}}>
-    {props.children}
-  </NoteContext.Provider>
-)
+  return (
+    // provider provides all the data or states which are enclosed in context 
+    // you can also pass below javascript object as {state:state,update:update}
+    <NoteContext.Provider value={{ state, update, notes, setNotes, addNote, deleteNote, editNote, getAllNotes }}>
+      {props.children}
+    </NoteContext.Provider>
+  )
 }
 
 export default NoteState;

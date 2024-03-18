@@ -7,7 +7,7 @@ const Signup = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password} = credentials;
+    const { name, email, password } = credentials;
 
     const response = await fetch(`http://localhost:5000/api/auth/createUser`, {
       method: "POST",
@@ -17,17 +17,17 @@ const Signup = (props) => {
       body: JSON.stringify({ name, email, password })
     });
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
 
     if (json.success) {
       // save the token and redirect
       localStorage.setItem('token', json.authToken);
       history("/");
-      props.showAlert("Account created successfully","success")
+      props.showAlert("Account created successfully", "success")
     }
     else {
       // alert("Invalid Credentials");
-      props.showAlert("Invalid Credentials","danger")
+      props.showAlert("Invalid Credentials", "danger")
     }
   }
 
@@ -36,7 +36,7 @@ const Signup = (props) => {
   }
   return (
     <div className='container mt-3'>
-      <h2 style={{marginBottom:'1em'}}>Create an account to use to iNotebook</h2>
+      <h2 style={{ marginBottom: '1em' }}>Create an account to use to iNotebook</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">Name</label>

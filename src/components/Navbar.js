@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
   let location = useLocation();
   useEffect(() => {
-    console.log(location.pathname);
+    // console.log(location.pathname);
   }, [location]);
 
   let history = useNavigate();

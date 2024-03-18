@@ -49,67 +49,55 @@ router.post('/addnote', fetchUser, [
 
 // Route 3:- Update an existing note using PUT "api/notes/updatenote", Login required
 router.put('/updatenote/:id', fetchUser, async (req, res) => {
-        // destructuring the things to be updated from our body
-        const { title, description, tag } = req.body;
         try {
-                // Create a newNote object
-                // const newNote = {};
-                // if(title){newNote.title = title};
-                // if(description){newNote.description = description};
-                // if(tag){newNote.tag = tag};
+                const { title, description, tag } = req.body;
 
-                // find the note to be updated and update it
                 let note = await Note.findById(req.params.id);
-                // if(!note){return res.status(404).send("Not Found")}
-
-                // note.user.toString() returns the id of the current user
-                // if(note.user.toString() !== req.user.id.to)
-                // {
-                //         return res.status(401).send("Not allowed");
-                // }
-
-                if (note) {
-                        note.title = title;
-                        note.description = description;
-                        note.tag = tag;
-                        const updateNote = await note.save();
-                        res.json(updateNote);
-                } else {
-                        return res.status(404).send("Note not found");
+                if (!note) {
+                        return res.status(404).json({ success: false, message: "Note not found" });
                 }
 
-                // note = await Note.findByIdAndUpdate(req.params.id,{$set: newNote}, {new: true});
-                // res.json(note);     
+                // Check if the note belongs to the authenticated user
+                if (note.user.toString() !== req.user.id) {
+                        return res.status(401).json({ success: false, message: "Not allowed" });
+                }
 
+                // Update the note
+                note.title = title;
+                note.description = description;
+                note.tag = tag;
+                const updatedNote = await note.save();
+                res.json({ success: true, message: "Note updated successfully", note: updatedNote });
         } catch (error) {
-                console.log(error.message);
-                res.status(500).send("Internal Server Error");
+                console.error(error.message);
+                res.status(500).json({ success: false, message: "Internal Server Error" });
         }
-})
+});
 
 // Route 4:- Delete an existing note using DELETE "api/notes/deletenote", Login required
 router.delete('/deletenote/:id', fetchUser, async (req, res) => {
         try {
                 // destructuring the things to be updated from our body
-                const { title, description, tag } = req.body;
+
 
                 // find the note to be deleted and update it
                 let note = await Note.findById(req.params.id);
-                if (!note) { return res.status(404).send("Not Found") }
+                if (!note) {
+                        return res.status(404).json({ success: false, message: "Note not found" });
+                }
 
-                // note.user.toString() returns the id of the current user
-                // if(note.user.toString() !== req.user.id)
-                // {
-                //         return res.status(401).send("Not allowed");
-                // }
+                // Check if the note belongs to the authenticated user
+                if (note.user.toString() !== req.user.id) {
+                        return res.status(401).json({ success: false, message: "Not allowed" });
+                }
 
                 note = await Note.findByIdAndDelete(req.params.id);
 
-                res.json({ "Success": "Note has been deleted", note: note });
+                res.json({ success: true, message: "Note has been deleted" });
         }
         catch (error) {
                 console.log(error.message);
-                res.status(500).send("Internal Server Error");
+                res.status(500).send({ success: false, message: "Internal Server Error" });
         }
 })
 module.exports = router;

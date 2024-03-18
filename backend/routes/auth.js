@@ -26,7 +26,7 @@ router.post('/createUser', [
         // If there are errors, return bad request and the errors
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-                return res.status(400).json({ success,errors: errors.array() });
+                return res.status(400).json({ success, errors: errors.array() });
         }
 
         // check if the user with the same email already exist
@@ -36,7 +36,7 @@ router.post('/createUser', [
         try {
                 let user = await User.findOne({ email: req.body.email });
                 if (user) {
-                        return res.status(400).json({success, error: "Sorry a user with this email already exist" })
+                        return res.status(400).json({ success, error: "Sorry a user with this email already exist" })
                 }
 
                 // create a new user
@@ -63,10 +63,10 @@ router.post('/createUser', [
                 }
 
                 const authToken = jwt.sign(data, JWT_SECRET);
-                console.log(authToken);
-                
+                // console.log(authToken);
+
                 success = true;
-                res.json({ success,authToken })
+                res.json({ success, authToken })
 
                 // res.json(user);
 
@@ -106,7 +106,7 @@ router.post('/login', [
                 // if password doesn't matches, return error
                 if (!passwordCompare) {
                         success = false;
-                        return res.status(400).json({success, error: "Invalid credentials" })
+                        return res.status(400).json({ success, error: "Invalid credentials" })
                 }
 
                 // if password is correct, send a payload which is the data of the user to be sent
